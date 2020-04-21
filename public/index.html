@@ -5,13 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat app</title>
     <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script defer src="./logic.js"></script>
 
   </head>
   <body>
-    <ul id="messages"></ul>
-    <div class="inputContainer">
-        <input id="m" autocomplete="off" />
-        <button onclick="sendMessage()">Send</button>
+    <div class="flexContainer">
+        <div class="roomListContainer">
+          <div class="openRoomsContainer">
+            <h2>Open rooms</h2>
+            <ul id="openRooms"></ul>
+          </div>
+          <div class="lockedRoomsContainer">
+            <h2>Locked rooms</h2>
+            <ul id="lockedRooms"></ul>
+          </div>
+        </div>
+        <div class="messageContainer">
+          <ul id="messages"></ul>
+          <div class="inputContainer">
+              <input id="m" autocomplete="off" />
+              <button onclick="sendMessage()">Send</button>
+          </div>
+        </div>
     </div>
   </body>
 </html>
