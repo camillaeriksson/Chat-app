@@ -65,11 +65,12 @@ body {
 }
 #messages li:nth-child(odd) {
   background: #eee;
-  max-width: 50%;
+  /* max-width: 50%; */
 }
 #messages li:nth-child(even) {
-  background: red;
+  background: rgb(190, 187, 187);
   /* width: 50%; */
-  position: relative;
-  right: 0;
+  /* position: relative; */
+  /* right: 0; */
+  text-align: end;
 }
