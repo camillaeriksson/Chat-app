@@ -1,23 +1,37 @@
-const express = require("express");
-const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+const express = require("express")
+const http = require("http")
+const socketIO = require("socket.io")
 
-const port = 3000;
 
-app.use(express.static("public"));
+const app = express()
+const server = http.createServer(app)
+const io = socketIO(server)
 
-io.on('connection', (socket) => {
 
-    console.log('New Connection')
+app.use(express.static("public"))
 
-    socket.on('message', (incoming) => {
-        io.emit('message', incoming)
+io.on("connection", (socket) => {
+    console.log("Client connected: ", socket.id)
+
+    socket.on("join room", (data) => {
+        socket.join(data.room, () => {
+            // Respond to client that joined successfully
+            io.to(socket.id).emit("join successful", "success")
+
+            // Bradcast message to all clients in the room
+            io.to(data.room).emit(
+                "message", 
+                { 
+                    name: data.name,
+                    message: `Has joined the room`
+                })
+        })
+
+        socket.on("message", (message) => {
+             // Bradcast message to all clients in the room
+            io.to(data.room).emit("message", { name: data.name, message })
+        })
     })
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-      });
 })
 
-http.listen(port, () => console.log("listening at " + port));
+server.listen(3000, () => console.log("listening at 3000"));
