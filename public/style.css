@@ -101,10 +101,11 @@ button {
 }
 
 #messages li:nth-child(odd) {
-  background: #eee;
+  background: white;
+  display: flex;
+  justify-content: flex-end;
 }
 
 #messages li:nth-child(even) {
-  background: rgb(190, 187, 187);
-  text-align: end;
+  background:rgb(209, 209, 209);
 }
