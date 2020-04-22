@@ -10,7 +10,16 @@
 
   </head>
   <body>
-    <div class="flexContainer">
+    <div>
+      <form class="joinUI">
+        <input type="text" placeholder="Type your name">
+        <input type="text" placeholder="Enter a room">
+        <button>Join room</button>
+      </form>
+    </div>
+
+
+    <div class="flexContainer hidden">
         <div class="roomListContainer">
           <div class="openRoomsContainer">
             <h2>Open rooms</h2>
@@ -24,8 +33,10 @@
         <div class="messageContainer">
           <ul id="messages"></ul>
           <div class="inputContainer">
+            <form>
               <input id="m" autocomplete="off" />
-              <button onclick="sendMessage()">Send</button>
+              <button>Send</button>
+            </form>
           </div>
         </div>
     </div>
