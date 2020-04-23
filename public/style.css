@@ -89,8 +89,10 @@ button {
   padding: 10px;
 }
 
-#messages {
+li {
   list-style-type: none;
+}
+#messages {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -107,5 +109,5 @@ button {
 }
 
 #messages li:nth-child(even) {
-  background:rgb(209, 209, 209);
+  background: rgb(209, 209, 209);
 }
