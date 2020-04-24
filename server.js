@@ -38,9 +38,10 @@ io.on("connection", (socket) => {
 function getAllRooms() {
   var availableRooms = [];
   var rooms = io.sockets.adapter.rooms;
+  console.log("rooms", rooms);
   if (rooms) {
     for (var room in rooms) {
-      if (!rooms[room].hasOwnProperty(room)) {
+      if (room.length !== 20) {
         availableRooms.push(room);
       }
     }
