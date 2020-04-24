@@ -18,7 +18,9 @@ function setupEventListeners() {
 
   // socket io events
   // socket.emit("get all rooms")
-/*   socket.on("create successful", addRoomToList) */
+ /*  socket.on("create successful", (data) => {
+    console.log(data.room)
+  }) */
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   socket.on("add room", printRoom);
