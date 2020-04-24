@@ -21,10 +21,8 @@ function setupEventListeners() {
   socket.on("create successful", )
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
-  socket.on("add room", printRoom);
-  socket.on("allRooms", (data) => {
-    console.log(data)
-  })
+  //   socket.on("add room", printRoom);
+  socket.on("allRooms", printRooms);
 }
 
 
@@ -63,12 +61,14 @@ function onJoinRoom(event) {
   socket.emit("join room", { name, room });
 }
 
-function printRoom(room) {
+function printRooms(data) {
   const ul = document.querySelector(".openRoomsContainer ul");
-  console.log(ul);
-  const li = document.createElement("li");
-  li.innerText = room;
-  ul.append(li);
+  ul.innerText = "";
+  data.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    ul.append(li);
+  });
 }
 
 function onSendMessage(event) {
