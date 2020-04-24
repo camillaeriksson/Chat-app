@@ -13,9 +13,13 @@ function setupEventListeners() {
   messageForm.addEventListener("submit", onSendMessage);
 
   // socket io events
+  // socket.emit("get all rooms")
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   socket.on("add room", printRoom);
+  socket.on("allRooms", (data) => {
+    console.log(data)
+  })
 }
 
 function onJoinRoom(event) {

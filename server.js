@@ -11,10 +11,13 @@ app.use(express.static("public"));
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
+  io.to(socket.id).emit("allRooms", [1, 2]);
+
   socket.on("join room", (data) => {
     socket.join(data.room, () => {
       // Respond to client that joined successfully
       io.to(socket.id).emit("join successful", "success");
+      io.emit("allRooms", [1, 2])
 
       // Bradcast message to all clients in the room
       io.to(data.room).emit("message", {
