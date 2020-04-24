@@ -63,30 +63,46 @@ button {
   height: 50%;
 }
 
-.messageContainer {
+.chatContainer {
   width: 70%;
+  height: 100vh;
+}
+
+.messageContainer {
+  width: 100%;
+  height: 80%;
+  overflow: auto;
 }
 
 .inputContainer {
   display: flex;
+  flex-direction: row;
   padding: 3px;
   position: fixed;
   bottom: 0;
-  width: 70%;
+  width: 100%;
+  /* height: 15%; */
 }
 
 .inputContainer input {
   border: 2px solid gray;
   padding: 10px;
-  width: 80%;
-  margin-right: 0.5%;
+  width: 70%;
 }
 
 .inputContainer button {
   width: 20%;
-  background: rgb(130, 224, 255);
+  font-size: 1.2rem;
+  border-radius: 10rem;
   border: none;
-  padding: 10px;
+  background-color: rgb(253, 70, 70);
+  color: white;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.inputContainer form {
+  width: 100%;
 }
 
 li {
@@ -104,10 +120,8 @@ li {
 
 #messages li:nth-child(odd) {
   background: white;
-  display: flex;
-  justify-content: flex-end;
 }
 
 #messages li:nth-child(even) {
-  background: rgb(209, 209, 209);
+  background: rgb(206, 205, 205);
 }
