@@ -88,8 +88,6 @@ function loadChatUI(data) {
 function onMessageReceived({ name, message }) {
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
-  const div = document.createElement("div");
-  li.append(div);
-  div.innerText = `${name}: ${message}`;
+  li.innerText = `${name}: ${message}`;
   ul.append(li);
 }
