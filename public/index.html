@@ -4,41 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat app</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="./logic.js"></script>
-
   </head>
   <body>
     <div>
       <form class="joinUI">
-        <input type="text" placeholder="Type your name">
-        <input type="text" placeholder="Enter a room">
+        <input type="text" placeholder="Type your name" />
+        <input type="text" placeholder="Enter a room" />
         <button>Join room</button>
       </form>
     </div>
 
-
     <div class="flexContainer hidden">
-        <div class="roomListContainer">
-          <div class="openRoomsContainer">
-            <h2>Open rooms</h2>
-            <ul id="openRooms"></ul>
-          </div>
-          <div class="lockedRoomsContainer">
-            <h2>Locked rooms</h2>
-            <ul id="lockedRooms"></ul>
-          </div>
+      <div class="roomListContainer">
+        <div class="createRoomContainer">
+          <form>
+            <input type="text" placeholder="Name your room" />
+            <input type="password" placeholder="Create password" />
+            <button>Create room</button>
+          </form>
         </div>
-        <div class="messageContainer">
-          <ul id="messages"></ul>
-          <div class="inputContainer">
-            <form>
-              <input id="m" autocomplete="off" />
-              <button>Send</button>
-            </form>
-          </div>
+        <div class="openRoomsContainer">
+          <h2>Open rooms</h2>
+          <ul id="openRooms"></ul>
         </div>
+        <div class="lockedRoomsContainer">
+          <h2>Locked rooms</h2>
+          <ul id="lockedRooms"></ul>
+        </div>
+      </div>
+      <div class="messageContainer">
+        <ul id="messages"></ul>
+        <div class="inputContainer">
+          <form>
+            <input id="m" autocomplete="off" />
+            <button>Send</button>
+          </form>
+        </div>
+      </div>
     </div>
   </body>
 </html>

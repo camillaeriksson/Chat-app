@@ -11,6 +11,14 @@ app.use(express.static("public"));
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
+  socket.on("create room", (data) => {
+    socket.write(data.room, () => {
+
+      io.to(socket.id).emit("create successful", data.room)
+
+    })
+  })
+
   io.to(socket.id).emit("allRooms", [1, 2]);
 
   socket.on("join room", (data) => {

@@ -8,18 +8,49 @@ function setupEventListeners() {
   const joinForm = document.querySelector("form.joinUI");
   joinForm.addEventListener("submit", onJoinRoom);
 
+  const createRoomForm = document.querySelector(".createRoomContainer form")
+  createRoomForm.addEventListener("submit", createRoom)
+
+
   // send message handler
   const messageForm = document.querySelector(".inputContainer form");
   messageForm.addEventListener("submit", onSendMessage);
 
   // socket io events
   // socket.emit("get all rooms")
+/*   socket.on("create successful", addRoomToList) */
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   socket.on("add room", printRoom);
   socket.on("allRooms", (data) => {
     console.log(data)
   })
+}
+
+
+function createRoom(event) {
+  event.preventDefault()
+  const [roomNameInput, passwordInput] = document.querySelectorAll(".createRoomContainer input")
+
+  const room = roomNameInput.value
+  const password = passwordInput.value
+
+  socket.emit("create room", { room, password })
+
+  roomNameInput.value = ""
+  passwordInput.value = ""
+
+  addRoomToList(room)
+  
+  console.log("password: ", password)
+}
+
+function addRoomToList(room) {
+  const ul = document.querySelector(".openRoomsContainer ul");
+  console.log(ul);
+  const li = document.createElement("li");
+  li.innerText = room;
+  ul.append(li);
 }
 
 function onJoinRoom(event) {
