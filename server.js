@@ -11,13 +11,13 @@ app.use(express.static("public"));
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
-  io.to(socket.id).emit("allRooms", [1, 2]);
+  io.to(socket.id).emit("allRooms", getAllRooms());
 
   socket.on("join room", (data) => {
     socket.join(data.room, () => {
       // Respond to client that joined successfully
       io.to(socket.id).emit("join successful", "success");
-      io.emit("allRooms", [1, 2])
+      io.emit("allRooms", getAllRooms());
 
       // Bradcast message to all clients in the room
       io.to(data.room).emit("message", {
@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
       });
     });
 
-    io.emit("add room", data.room);
+    // io.emit("add room", data.room);
 
     socket.on("message", (message) => {
       // Bradcast message to all clients in the room
@@ -34,5 +34,20 @@ io.on("connection", (socket) => {
     });
   });
 });
+
+function getAllRooms() {
+  var availableRooms = [];
+  var rooms = io.sockets.adapter.rooms;
+  console.log("rooms", rooms);
+  if (rooms) {
+    for (var room in rooms) {
+      if (room.length !== 20) {
+        availableRooms.push(room);
+      }
+    }
+  }
+  console.log(availableRooms);
+  return availableRooms;
+}
 
 server.listen(3000, () => console.log("listening at 3000"));
