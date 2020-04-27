@@ -107,9 +107,11 @@ function loadChatUI(data) {
 }
 
 function onMessageReceived({ name, message }) {
+  const hours = new Date().getHours()
+  const minutes = new Date().getMinutes()
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
-  li.innerText = `${name}: ${message}`;
+  li.innerText = `${hours}:${minutes} ${name}: ${message}`;
   ul.append(li);
 }
 

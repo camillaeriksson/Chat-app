@@ -13,17 +13,6 @@ io.on("connection", (socket) => {
 
   io.to(socket.id).emit("allRooms", getAllRooms());
 
-  // socket.on("create room", (data) => {
-  //   socket.join(data.room, () => {
-  //     io.to(data.room).emit("message", {
-  //      name: data.name,
-  //      message: `Has joined the room`,
-  //   });
-
-  // });
-  
- 
-  
   
   socket.on("create room", (data) => {
     socket.join(data.room, () => {
@@ -37,14 +26,10 @@ io.on("connection", (socket) => {
       name: name.name,
     });
 
-    socket.on("leave room", (room) => {
+      socket.on("leave room", (room) => {
       socket.leave(room)
       socket.to(room).emit('user left', socket.id);
-      io.emit("allRooms", getAllRooms());
-      io.to(room).emit("message", {
-        name: name.name,
-        message: `Has left the ${room}`,
-      });
+      io.emit(getAllRooms());
     })
 
     socket.on("join room", (data) => {
@@ -58,8 +43,6 @@ io.on("connection", (socket) => {
           message: `Has joined the room`,
         });
       });
-
-      // io.emit("add room", data.room);
 
       socket.on("message", (message) => {
         // Bradcast message to all clients in the room
