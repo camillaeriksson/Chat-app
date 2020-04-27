@@ -13,31 +13,28 @@ io.on("connection", (socket) => {
 
   io.to(socket.id).emit("allRooms", getAllRooms());
 
-  // socket.on("create room", (data) => {
-  //   socket.join(data.room, () => {
-  //     io.to(data.room).emit("message", {
-  //      name: data.name,
-  //      message: `Has joined the room`,
-  //   });
-
-  // });
-
+  
   socket.on("create room", (data) => {
     socket.join(data.room, () => {
       io.emit("allRooms", getAllRooms());
     });
   });
-
+  
   socket.on("join chat", (name) => {
     io.to(socket.id).emit("join successful", "success");
-    io.emit("welcome message", {
+    io.to(socket.id).emit("welcome message", {
       name: name.name,
     });
+
+      socket.on("leave room", (room) => {
+      socket.leave(room)
+      socket.to(room).emit('user left', socket.id);
+      io.emit(getAllRooms());
+    })
 
     socket.on("join room", (data) => {
       socket.join(data.room, () => {
         // Respond to client that joined successfully
-        io.to(socket.id).emit("join successful", "success");
         io.emit("allRooms", getAllRooms());
 
         // Bradcast message to all clients in the room
@@ -47,13 +44,15 @@ io.on("connection", (socket) => {
         });
       });
 
-      // io.emit("add room", data.room);
-
       socket.on("message", (message) => {
         // Bradcast message to all clients in the room
         io.to(data.room).emit("message", { name: name.name, message });
       });
     });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected")
+    })
   });
 });
 

@@ -55,6 +55,7 @@ function createRoom(event) {
 
 function onJoinRoom(room) {
   socket.emit("join room", { room });
+  document.querySelector(".chatContainer").classList.remove("hidden")
 }
 
 function onJoinChat(event) {
@@ -64,6 +65,7 @@ function onJoinChat(event) {
   const name = nameInput.value;
 
   socket.emit("join chat", { name });
+  document.querySelector(".chatContainer").classList.add("hidden")
 }
 
 function printRooms(data) {
@@ -72,14 +74,24 @@ function printRooms(data) {
   data.forEach((room) => {
     const li = document.createElement("li");
     const button = document.createElement("button");
+    const leaveButton = document.createElement("button");
     button.innerText = "Join";
     button.classList.add("join_button");
+    leaveButton.innerText = "Leave chat";
+    leaveButton.classList.add("join_button");
     button.addEventListener("click", () => onJoinRoom(room));
+    leaveButton.addEventListener("click", () => onLeaveRoom(room))
     li.innerText = room;
-    li.append(button);
+    li.append(button, leaveButton);
     ul.append(li);
   });
   return;
+}
+
+function onLeaveRoom(room) {
+  socket.emit("leave room", { room });
+  console.log("has left room", room)
+  document.querySelector(".chatContainer").classList.add("hidden")
 }
 
 function onSendMessage(event) {
@@ -95,9 +107,11 @@ function loadChatUI(data) {
 }
 
 function onMessageReceived({ name, message }) {
+  const hours = new Date().getHours()
+  const minutes = new Date().getMinutes()
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
-  li.innerText = `${name}: ${message}`;
+  li.innerText = `${hours}:${minutes} ${name}: ${message}`;
   ul.append(li);
 }
 
