@@ -13,24 +13,46 @@ io.on("connection", (socket) => {
 
   io.to(socket.id).emit("allRooms", getAllRooms());
 
-  socket.on("join room", (data) => {
-    socket.join(data.room, () => {
-      // Respond to client that joined successfully
-      io.to(socket.id).emit("join successful", "success");
-      io.emit("allRooms", getAllRooms());
+  // socket.on("create room", (data) => {
+  //   socket.join(data.room, () => {
+  //     io.to(data.room).emit("message", {
+  //      name: data.name,
+  //      message: `Has joined the room`,
+  //   });
 
-      // Bradcast message to all clients in the room
-      io.to(data.room).emit("message", {
-        name: data.name,
-        message: `Has joined the room`,
-      });
+  // });
+
+  socket.on("create room", (data) => {
+    socket.join(data.room, () => {
+      io.emit("allRooms", getAllRooms());
+    });
+  });
+
+  socket.on("join chat", (name) => {
+    io.to(socket.id).emit("join successful", "success");
+    io.emit("welcome message", {
+      name: name.name,
     });
 
-    // io.emit("add room", data.room);
+    socket.on("join room", (data) => {
+      socket.join(data.room, () => {
+        // Respond to client that joined successfully
+        io.to(socket.id).emit("join successful", "success");
+        io.emit("allRooms", getAllRooms());
 
-    socket.on("message", (message) => {
-      // Bradcast message to all clients in the room
-      io.to(data.room).emit("message", { name: data.name, message });
+        // Bradcast message to all clients in the room
+        io.to(data.room).emit("message", {
+          name: name.name,
+          message: `Has joined the room`,
+        });
+      });
+
+      // io.emit("add room", data.room);
+
+      socket.on("message", (message) => {
+        // Bradcast message to all clients in the room
+        io.to(data.room).emit("message", { name: name.name, message });
+      });
     });
   });
 });

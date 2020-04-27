@@ -5,8 +5,14 @@ window.addEventListener("load", () => {
 });
 
 function setupEventListeners() {
+  //   const joinForm = document.querySelector("form.joinUI");
+  //   joinForm.addEventListener("submit", onJoinRoom);
+
   const joinForm = document.querySelector("form.joinUI");
-  joinForm.addEventListener("submit", onJoinRoom);
+  joinForm.addEventListener("submit", onJoinChat);
+
+  const createRoomForm = document.querySelector(".createRoomContainer form");
+  createRoomForm.addEventListener("submit", createRoom);
 
   // send message handler
   const messageForm = document.querySelector(".inputContainer form");
@@ -14,20 +20,50 @@ function setupEventListeners() {
 
   // socket io events
   // socket.emit("get all rooms")
+  //   socket.on("create successful");
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
+  socket.on("welcome message", welcomeMessage);
   //   socket.on("add room", printRoom);
   socket.on("allRooms", printRooms);
 }
 
-function onJoinRoom(event) {
+// addRoomToList(room);
+
+// function addRoomToList(room) {
+//   const ul = document.querySelector(".openRoomsContainer ul");
+//   console.log(ul);
+//   const li = document.createElement("li");
+//   li.innerText = room;
+//   ul.append(li);
+// }
+
+function createRoom(event) {
   event.preventDefault();
-  const [nameInput, roomInput] = document.querySelectorAll(".joinUI input");
+  const [roomNameInput, passwordInput] = document.querySelectorAll(
+    ".createRoomContainer input"
+  );
+
+  const room = roomNameInput.value;
+  const password = passwordInput.value;
+
+  socket.emit("create room", { room, password });
+
+  roomNameInput.value = "";
+  passwordInput.value = "";
+}
+
+function onJoinRoom(room) {
+  socket.emit("join room", { room });
+}
+
+function onJoinChat(event) {
+  event.preventDefault();
+  const nameInput = document.querySelector(".joinUI input");
 
   const name = nameInput.value;
-  const room = roomInput.value;
 
-  socket.emit("join room", { name, room });
+  socket.emit("join chat", { name });
 }
 
 function printRooms(data) {
@@ -35,9 +71,15 @@ function printRooms(data) {
   ul.innerText = "";
   data.forEach((room) => {
     const li = document.createElement("li");
+    const button = document.createElement("button");
+    button.innerText = "Join";
+    button.classList.add("join_button");
+    button.addEventListener("click", () => onJoinRoom(room));
     li.innerText = room;
+    li.append(button);
     ul.append(li);
   });
+  return;
 }
 
 function onSendMessage(event) {
@@ -56,5 +98,12 @@ function onMessageReceived({ name, message }) {
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
   li.innerText = `${name}: ${message}`;
+  ul.append(li);
+}
+
+function welcomeMessage({ name }) {
+  const ul = document.querySelector(".messageContainer ul");
+  const li = document.createElement("li");
+  li.innerText = `Welcome to the chat, ${name}!`;
   ul.append(li);
 }
