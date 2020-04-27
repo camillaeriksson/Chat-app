@@ -21,23 +21,35 @@ io.on("connection", (socket) => {
   //   });
 
   // });
-
+  
+ 
+  
+  
   socket.on("create room", (data) => {
     socket.join(data.room, () => {
       io.emit("allRooms", getAllRooms());
     });
   });
-
+  
   socket.on("join chat", (name) => {
     io.to(socket.id).emit("join successful", "success");
-    io.emit("welcome message", {
+    io.to(socket.id).emit("welcome message", {
       name: name.name,
     });
+
+    socket.on("leave room", (room) => {
+      socket.leave(room)
+      socket.to(room).emit('user left', socket.id);
+      io.emit("allRooms", getAllRooms());
+      io.to(room).emit("message", {
+        name: name.name,
+        message: `Has left the ${room}`,
+      });
+    })
 
     socket.on("join room", (data) => {
       socket.join(data.room, () => {
         // Respond to client that joined successfully
-        io.to(socket.id).emit("join successful", "success");
         io.emit("allRooms", getAllRooms());
 
         // Bradcast message to all clients in the room
@@ -54,6 +66,10 @@ io.on("connection", (socket) => {
         io.to(data.room).emit("message", { name: name.name, message });
       });
     });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected")
+    })
   });
 });
 
