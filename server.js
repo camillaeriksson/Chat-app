@@ -10,38 +10,49 @@ app.use(express.static("public"));
 
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
-  
+
   io.to(socket.id).emit("allRooms", getAllRooms());
 
- /*  socket.on("create room", (data) => {
+  // socket.on("create room", (data) => {
+  //   socket.join(data.room, () => {
+  //     io.to(data.room).emit("message", {
+  //      name: data.name,
+  //      message: `Has joined the room`,
+  //   });
+
+  // });
+
+  socket.on("create room", (data) => {
     socket.join(data.room, () => {
-      io.to(socket.id).emit("create successful", "success");
-
-      io.to(data.room).emit("message", {
-       name: data.name,
-       message: `Has joined the room`,
-    });
-  }); */
-
-
-  socket.on("join room", (data) => {
-    socket.join(data.room, () => {
-      // Respond to client that joined successfully
-      io.to(socket.id).emit("join successful", "success");
       io.emit("allRooms", getAllRooms());
+    });
+  });
 
-      // Bradcast message to all clients in the room
-      io.to(data.room).emit("message", {
-        name: data.name,
-        message: `Has joined the room`,
-      });
+  socket.on("join chat", (name) => {
+    io.to(socket.id).emit("join successful", "success");
+    io.emit("welcome message", {
+      name: name.name,
     });
 
-    // io.emit("add room", data.room);
+    socket.on("join room", (data) => {
+      socket.join(data.room, () => {
+        // Respond to client that joined successfully
+        io.to(socket.id).emit("join successful", "success");
+        io.emit("allRooms", getAllRooms());
 
-    socket.on("message", (message) => {
-      // Bradcast message to all clients in the room
-      io.to(data.room).emit("message", { name: data.name, message });
+        // Bradcast message to all clients in the room
+        io.to(data.room).emit("message", {
+          name: name.name,
+          message: `Has joined the room`,
+        });
+      });
+
+      // io.emit("add room", data.room);
+
+      socket.on("message", (message) => {
+        // Bradcast message to all clients in the room
+        io.to(data.room).emit("message", { name: name.name, message });
+      });
     });
   });
 });
@@ -52,9 +63,9 @@ function getAllRooms() {
   console.log("rooms", rooms);
   if (rooms) {
     for (var room in rooms) {
-      if (room.length !== 20) {
-        availableRooms.push(room);
-      }
+      //   if (room.length !== 20) {
+      availableRooms.push(room);
+      //   }
     }
   }
   console.log(availableRooms);
