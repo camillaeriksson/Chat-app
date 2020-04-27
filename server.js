@@ -63,9 +63,9 @@ function getAllRooms() {
   console.log("rooms", rooms);
   if (rooms) {
     for (var room in rooms) {
-      //   if (room.length !== 20) {
-      availableRooms.push(room);
-      //   }
+      if (room.length !== 20) {
+        availableRooms.push(room);
+      }
     }
   }
   console.log(availableRooms);
