@@ -28,16 +28,17 @@ io.on("connection", (socket) => {
     socket.on("leave room", (room) => {
       socket.leave(room, () => {
         socket.to(room).emit("user left", socket.id);
-        socket.to(socket.id).emit("leave successful", "success");
+        // socket.to(socket.id).emit("leave successful", "success");
         io.emit(getAllRooms());
       });
     });
 
     socket.on("join room", (data) => {
       // Make sure to leave all previous rooms
-      // for (const room of Object.keys(socket.rooms)) {
-      //   socket.leave(room);
-      // }
+      for (const room of Object.keys(socket.rooms)) {
+      /* socket.leave(room); */
+      console.log("RoomTest", room)
+      }
 
       socket.join(data.room, () => {
         // Respond to client that joined successfully

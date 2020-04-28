@@ -24,7 +24,7 @@ function setupEventListeners() {
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   socket.on("welcome message", welcomeMessage);
-  socket.on("leave successful", hideChatUI);
+  // socket.on("leave successful", hideChatUI);
   //   socket.on("add room", printRoom);
   socket.on("allRooms", printRooms);
 }
@@ -88,15 +88,18 @@ function printRooms(data) {
   });
   return;
 }
-
+ 
 function onLeaveRoom(room) {
   socket.emit("leave room", { room });
   console.log("has left room", room)
+  document.querySelector(".messageContainer ul").innerText = ""
+  document.querySelector(".chatContainer").classList.add("hidden")
 }
 
-function hideChatUI() {
-  document.querySelector(".messageContainer").innerText = ""
-}
+/* function hideChatUI() {
+  console.log("hideChatUI")
+  document.querySelector(".messageContainer ul").empty()
+} */
 
 function onSendMessage(event) {
   event.preventDefault();
