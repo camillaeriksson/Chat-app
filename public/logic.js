@@ -57,6 +57,7 @@ function createRoom(event) {
 }
 
 function onJoinRoom(room) {
+  document.querySelector(".messageContainer ul").innerText = "";
   socket.emit("join room", { room });
   document.querySelector(".chatContainer").classList.remove("hidden");
 }
