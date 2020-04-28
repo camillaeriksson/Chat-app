@@ -45,12 +45,21 @@ function createRoom(event) {
   );
 
   const room = roomNameInput.value;
-  const password = passwordInput.value;
+  let password = passwordInput.value;
 
   socket.emit("create room", { room, password });
 
+/*   if (password.length > 0) {
+    printLockedRooms()
+  } else {
+    printRooms()
+  } */
+
   roomNameInput.value = "";
   passwordInput.value = "";
+
+  console.log(password)
+
 }
 
 function onJoinRoom(room) {
@@ -68,8 +77,8 @@ function onJoinChat(event) {
   document.querySelector(".chatContainer").classList.add("hidden")
 }
 
-function printRooms(data) {
-  const ul = document.querySelector(".openRoomsContainer ul");
+/* function printLockedRooms(data) {
+const ul = document.querySelector(".lockedRoomsContainer ul");
   ul.innerText = "";
   data.forEach((room) => {
     const li = document.createElement("li");
@@ -84,6 +93,35 @@ function printRooms(data) {
     li.innerText = room;
     li.append(button, leaveButton);
     ul.append(li);
+  });
+  return;
+}
+ */
+
+function printRooms(data, password) {
+  const openUl = document.querySelector(".openRoomsContainer ul");
+  openUl.innerText = "";
+  const lockedUl = document.querySelector(".lockedRoomsContainer ul");
+  lockedUl.innerText = "";
+  data.forEach((room) => {
+    const li = document.createElement("li");
+    const button = document.createElement("button");
+    const leaveButton = document.createElement("button");
+    button.innerText = "Join";
+    button.classList.add("join_button");
+    leaveButton.innerText = "Leave chat";
+    leaveButton.classList.add("join_button");
+    button.addEventListener("click", () => onJoinRoom(room));
+    leaveButton.addEventListener("click", () => onLeaveRoom(room))
+    li.innerText = room;
+    li.append(button, leaveButton);
+    
+    if (password === password) {
+      lockedUl.append(li)
+      console.log(password)
+    } else {
+      openUl.append(li);
+    }
   });
   return;
 }
