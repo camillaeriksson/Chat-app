@@ -19,25 +19,24 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("leave room", (room) => {
+    socket.leaveAll(room, () => {
+      socket.to(room).emit("user left", socket.id);
+      // socket.to(socket.id).emit("leave successful", "success");
+    });
+    io.emit("allRooms", getAllRooms());
+  });
+
   socket.on("join chat", (name) => {
     io.to(socket.id).emit("join successful", "success");
     io.to(socket.id).emit("welcome message", {
       name: name.name,
     });
 
-    socket.on("leave room", (room) => {
-      socket.leave(room, () => {
-        socket.to(room).emit("user left", socket.id);
-        // socket.to(socket.id).emit("leave successful", "success");
-        io.emit(getAllRooms());
-      });
-    });
-
     socket.on("join room", (data) => {
       // Make sure to leave all previous rooms
       for (const room of Object.keys(socket.rooms)) {
-      /* socket.leave(room); */
-      console.log("RoomTest", room)
+        /* socket.leave(room); */
       }
 
       socket.join(data.room, () => {
@@ -52,8 +51,11 @@ io.on("connection", (socket) => {
       });
 
       socket.on("message", (message) => {
+        console.log("message", message);
         // Bradcast message to all clients in the room
-        io.to(data.room).emit("message", { name: name.name, message });
+        if (message) {
+          io.to(data.room).emit("message", { name: name.name, message });
+        }
       });
     });
 
