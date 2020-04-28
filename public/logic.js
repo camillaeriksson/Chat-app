@@ -1,4 +1,6 @@
 const socket = io();
+const name = ""
+const room = ""
 
 window.addEventListener("load", () => {
   setupEventListeners();
