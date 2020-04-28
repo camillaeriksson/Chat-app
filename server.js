@@ -13,26 +13,32 @@ io.on("connection", (socket) => {
 
   io.to(socket.id).emit("allRooms", getAllRooms());
 
-  
   socket.on("create room", (data) => {
     socket.join(data.room, () => {
       io.emit("allRooms", getAllRooms());
     });
   });
-  
+
   socket.on("join chat", (name) => {
     io.to(socket.id).emit("join successful", "success");
     io.to(socket.id).emit("welcome message", {
       name: name.name,
     });
 
-      socket.on("leave room", (room) => {
-      socket.leave(room)
-      socket.to(room).emit('user left', socket.id);
-      io.emit(getAllRooms());
-    })
+    socket.on("leave room", (room) => {
+      socket.leave(room, () => {
+        socket.to(room).emit("user left", socket.id);
+        socket.to(socket.id).emit("leave successful", "success");
+        io.emit(getAllRooms());
+      });
+    });
 
     socket.on("join room", (data) => {
+      // Make sure to leave all previous rooms
+      // for (const room of Object.keys(socket.rooms)) {
+      //   socket.leave(room);
+      // }
+
       socket.join(data.room, () => {
         // Respond to client that joined successfully
         io.emit("allRooms", getAllRooms());
@@ -51,8 +57,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("User disconnected")
-    })
+      console.log("User disconnected");
+    });
   });
 });
 
@@ -70,5 +76,22 @@ function getAllRooms() {
   console.log(availableRooms);
   return availableRooms;
 }
+
+// function getAllRooms() {
+//   var availableRooms = [];
+//   var rooms = io.sockets.adapter.rooms;
+//   console.log("rooms", rooms);
+//   if (rooms) {
+//     const socketIds = Object.keys(io.sockets.sockets)
+
+//     for (var roomId in rooms) {
+//       if (socketIds.find((socketId) => socketId !== roomId)) {
+//         availableRooms.push(roomId);
+//       }
+//     }
+//   }
+//   console.log(availableRooms);
+//   return availableRooms;
+// }
 
 server.listen(3000, () => console.log("listening at 3000"));
