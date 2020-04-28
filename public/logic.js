@@ -1,4 +1,6 @@
 const socket = io();
+const name = ""
+const room = ""
 
 window.addEventListener("load", () => {
   setupEventListeners();
@@ -24,6 +26,7 @@ function setupEventListeners() {
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   socket.on("welcome message", welcomeMessage);
+  // socket.on("leave successful", hideChatUI);
   //   socket.on("add room", printRoom);
   socket.on("allRooms", printRooms);
 }
@@ -63,8 +66,9 @@ function createRoom(event) {
 }
 
 function onJoinRoom(room) {
+  document.querySelector(".messageContainer ul").innerText = "";
   socket.emit("join room", { room });
-  document.querySelector(".chatContainer").classList.remove("hidden")
+  document.querySelector(".chatContainer").classList.remove("hidden");
 }
 
 function onJoinChat(event) {
@@ -74,12 +78,16 @@ function onJoinChat(event) {
   const name = nameInput.value;
 
   socket.emit("join chat", { name });
-  document.querySelector(".chatContainer").classList.add("hidden")
+  document.querySelector(".chatContainer").classList.add("hidden");
 }
 
 /* function printLockedRooms(data) {
 const ul = document.querySelector(".lockedRoomsContainer ul");
   ul.innerText = "";
+
+  function printRooms(data) {
+  const ul = document.querySelector(".openRoomsContainer ul");
+  ul.innerHTML = "";
   data.forEach((room) => {
     const li = document.createElement("li");
     const button = document.createElement("button");
@@ -89,7 +97,7 @@ const ul = document.querySelector(".lockedRoomsContainer ul");
     leaveButton.innerText = "Leave chat";
     leaveButton.classList.add("join_button");
     button.addEventListener("click", () => onJoinRoom(room));
-    leaveButton.addEventListener("click", () => onLeaveRoom(room))
+    leaveButton.addEventListener("click", () => onLeaveRoom(room));
     li.innerText = room;
     li.append(button, leaveButton);
     ul.append(li);
@@ -128,9 +136,15 @@ function printRooms(data, password) {
 
 function onLeaveRoom(room) {
   socket.emit("leave room", { room });
-  console.log("has left room", room)
-  document.querySelector(".chatContainer").classList.add("hidden")
+  console.log("has left room", room);
+  document.querySelector(".messageContainer ul").innerText = "";
+  document.querySelector(".chatContainer").classList.add("hidden");
 }
+
+/* function hideChatUI() {
+  console.log("hideChatUI")
+  document.querySelector(".messageContainer ul").empty()
+} */
 
 function onSendMessage(event) {
   event.preventDefault();
@@ -145,12 +159,13 @@ function loadChatUI(data) {
 }
 
 function onMessageReceived({ name, message }) {
-  const hours = new Date().getHours()
-  const minutes = new Date().getMinutes()
+  const hours = new Date().getHours();
+  const minutes = new Date().getMinutes();
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
   li.innerText = `${hours}:${minutes} ${name}: ${message}`;
   ul.append(li);
+  console.log(name, message);
 }
 
 function welcomeMessage({ name }) {
