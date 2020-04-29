@@ -66,7 +66,11 @@ function createRoom(event, data) {
 function onJoinRoom(room) {
   document.querySelector(".flexContainer h3").innerText = "";
   document.querySelector(".messageContainer ul").innerText = "";
-  socket.emit("join room", { room });
+  const [roomNameInput, passwordInput] = document.querySelectorAll(
+    ".createRoomContainer input" // hämta lösenords element
+  ); // eventuellt fel element
+  let password = !passwordInput.value.length ? null : passwordInput.value;  
+  socket.emit("join room", { room, password });
   document.querySelector(".chatContainer").classList.remove("hidden");
 }
 
@@ -101,8 +105,15 @@ const ul = document.querySelector(".lockedRoomsContainer ul");
 } */
 
 
-function printRooms(data) {
-  data.forEach((room, index) => {
+function printRooms(rooms) {
+  rooms.forEach((room, index) => {
+
+    if (room.hasPassword) {
+      // create password room
+    } else {
+      // create normal room
+    }
+
     console.log("hej")
     if (!room.hasPassword) {
       const openUl = document.querySelector(".openRoomsContainer ul");
