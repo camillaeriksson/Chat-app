@@ -25,6 +25,7 @@ function setupEventListeners() {
   //   socket.on("create successful");
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
+  //   socket.on("print room", printRoomName);
   socket.on("welcome message", welcomeMessage);
   // socket.on("leave successful", hideChatUI);
   //   socket.on("add room", printRoom);
@@ -42,6 +43,7 @@ function setupEventListeners() {
 // }
 
 function createRoom(event) {
+  document.querySelector(".messageContainer ul").innerText = "";
   event.preventDefault();
   const [roomNameInput, passwordInput] = document.querySelectorAll(
     ".createRoomContainer input"
@@ -52,19 +54,31 @@ function createRoom(event) {
 
   socket.emit("create room", { room, password });
 
-  document.querySelector(".flexContainer h3").innerText = "";
+  document.querySelector(".welcomeMessageContainer").classList.add("hidden");
 
   document.querySelector(".chatContainer").classList.remove("hidden");
+
+  const roomNameContainer = document.querySelector(".roomNameContainer");
+  const roomName = document.createElement("h2");
+  roomNameContainer.innerHTML = "";
+  roomName.innerText = room;
+  roomNameContainer.append(roomName);
 
   roomNameInput.value = "";
   passwordInput.value = "";
 }
 
 function onJoinRoom(room) {
-  document.querySelector(".flexContainer h3").innerText = "";
+  document.querySelector(".welcomeMessageContainer").classList.add("hidden");
   document.querySelector(".messageContainer ul").innerText = "";
   socket.emit("join room", { room });
   document.querySelector(".chatContainer").classList.remove("hidden");
+
+  const roomNameContainer = document.querySelector(".roomNameContainer");
+  const roomName = document.createElement("h2");
+  roomNameContainer.innerHTML = "";
+  roomName.innerText = room;
+  roomNameContainer.append(roomName);
 }
 
 function onJoinChat(event) {
@@ -86,7 +100,7 @@ function printRooms(data) {
     const leaveButton = document.createElement("button");
     button.innerText = "Join";
     button.classList.add("join_button");
-    leaveButton.innerText = "Leave chat";
+    leaveButton.innerText = "Leave";
     leaveButton.classList.add("join_button");
     button.addEventListener("click", () => onJoinRoom(room));
     leaveButton.addEventListener("click", () => onLeaveRoom(room));
@@ -119,24 +133,37 @@ function onSendMessage(event) {
 function loadChatUI(name) {
   const nameContainer = document.createElement("h1");
   nameContainer.innerText = `${name}`;
-  document.querySelector(".roomListContainer").prepend(nameContainer);
+  document.querySelector(".userNameContainer").append(nameContainer);
   document.querySelector(".joinUI").classList.add("hidden");
   document.querySelector(".flexContainer").classList.remove("hidden");
 }
 
 function onMessageReceived({ name, message }) {
-  const hours = new Date().getHours();
-  const minutes = new Date().getMinutes();
+  const time = new Date().toTimeString().substr(0, 5);
+  //   const s = d.format("hh:mm tt");
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
-  li.innerText = `${hours}:${minutes} ${name}: ${message}`;
+  li.innerText = `${time} ${name}\n ${message}`;
   ul.append(li);
   console.log(name, message);
+
+  const chatMessages = document.querySelector(".messageContainer");
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function welcomeMessage({ name }) {
-  const chatContainer = document.querySelector(".flexContainer");
-  const welcomeMessage = document.createElement("h3");
+  const flexContainer = document.querySelector(".flexContainer");
+  const welcomeMessageContainer = document.createElement("div");
+  welcomeMessageContainer.classList.add("welcomeMessageContainer");
+  const welcomeMessage = document.createElement("h1");
   welcomeMessage.innerText = `Welcome to the chat, ${name}!`;
-  chatContainer.append(welcomeMessage);
+  welcomeMessageContainer.append(welcomeMessage);
+  flexContainer.append(welcomeMessageContainer);
 }
+
+// function printRoomName(room) {
+//   const messageContainer = document.querySelector(".messageContainer");
+//   const roomName = document.createElement("h2");
+//   roomName.innerHTML = `${room}`;
+//   messageContainer.prepend(roomName);
+// }

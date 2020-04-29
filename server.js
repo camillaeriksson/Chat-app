@@ -28,11 +28,12 @@ io.on("connection", (socket) => {
     });
 
     socket.on("create room", (data) => {
+      //   io.to(socket.id).emit("print room", data.room);
       socket.leaveAll();
       socket.join(data.room, () => {
         io.to(data.room).emit("message", {
           name: name.name,
-          message: `Has joined ${data.room}`,
+          message: `has joined ${data.room}`,
         });
         io.emit("allRooms", getAllRooms());
       });
@@ -45,6 +46,7 @@ io.on("connection", (socket) => {
       // for (const room of Object.keys(socket.rooms)) {
       //   /* socket.leave(room); */
       // }
+      //   io.to(socket.id).emit("print room", data.room);
 
       socket.join(data.room, () => {
         // Respond to client that joined successfully

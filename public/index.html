@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="style.css" />
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="./logic.js"></script>
+    <script
+      src="https://kit.fontawesome.com/89d03a09dd.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
@@ -20,6 +24,7 @@
 
     <div class="flexContainer hidden">
       <div class="roomListContainer">
+        <div class="userNameContainer"><i class="fas fa-user-circle"></i></div>
         <div class="createRoomContainer">
           <form class="addRoomForm">
             <input type="text" required placeholder="Name your room" />
@@ -37,6 +42,7 @@
         </div>
       </div>
       <div class="chatContainer">
+        <div class="roomNameContainer"></div>
         <div class="messageContainer">
           <ul id="messages"></ul>
         </div>
