@@ -20,6 +20,24 @@ body {
   width: 100%;
 }
 
+i {
+  font-size: 1.6rem;
+  margin-right: 0.3rem;
+  /* color: rgb(253, 70, 70); */
+}
+
+.userNameContainer {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.welcomeMessageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 form {
   display: flex;
   flex-direction: column;

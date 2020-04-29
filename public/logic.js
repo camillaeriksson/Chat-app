@@ -52,7 +52,7 @@ function createRoom(event) {
 
   socket.emit("create room", { room, password });
 
-  document.querySelector(".flexContainer h3").innerText = "";
+  document.querySelector(".welcomeMessageContainer").classList.add("hidden");
 
   document.querySelector(".chatContainer").classList.remove("hidden");
 
@@ -61,7 +61,7 @@ function createRoom(event) {
 }
 
 function onJoinRoom(room) {
-  document.querySelector(".flexContainer h3").innerText = "";
+  document.querySelector(".welcomeMessageContainer").classList.add("hidden");
   document.querySelector(".messageContainer ul").innerText = "";
   socket.emit("join room", { room });
   document.querySelector(".chatContainer").classList.remove("hidden");
@@ -86,7 +86,7 @@ function printRooms(data) {
     const leaveButton = document.createElement("button");
     button.innerText = "Join";
     button.classList.add("join_button");
-    leaveButton.innerText = "Leave chat";
+    leaveButton.innerText = "Leave";
     leaveButton.classList.add("join_button");
     button.addEventListener("click", () => onJoinRoom(room));
     leaveButton.addEventListener("click", () => onLeaveRoom(room));
@@ -119,7 +119,7 @@ function onSendMessage(event) {
 function loadChatUI(name) {
   const nameContainer = document.createElement("h1");
   nameContainer.innerText = `${name}`;
-  document.querySelector(".roomListContainer").prepend(nameContainer);
+  document.querySelector(".userNameContainer").append(nameContainer);
   document.querySelector(".joinUI").classList.add("hidden");
   document.querySelector(".flexContainer").classList.remove("hidden");
 }
@@ -135,8 +135,11 @@ function onMessageReceived({ name, message }) {
 }
 
 function welcomeMessage({ name }) {
-  const chatContainer = document.querySelector(".flexContainer");
-  const welcomeMessage = document.createElement("h3");
+  const flexContainer = document.querySelector(".flexContainer");
+  const welcomeMessageContainer = document.createElement("div");
+  welcomeMessageContainer.classList.add("welcomeMessageContainer");
+  const welcomeMessage = document.createElement("h1");
   welcomeMessage.innerText = `Welcome to the chat, ${name}!`;
-  chatContainer.append(welcomeMessage);
+  welcomeMessageContainer.append(welcomeMessage);
+  flexContainer.append(welcomeMessageContainer);
 }
