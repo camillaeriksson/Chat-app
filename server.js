@@ -97,7 +97,7 @@ function getAllRooms() {
       if (room.length !== 20) {
         const formattedRoom = {
           name: room,
-          hasPassword: rooms[room].password
+          hasPassword: rooms[room].password !== null
         }
         availableRooms.push(formattedRoom);
       }

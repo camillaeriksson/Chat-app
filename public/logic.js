@@ -1,6 +1,6 @@
 const socket = io();
-const name = "";
-const room = "";
+/* const name = "";
+const room = ""; */
 
 window.addEventListener("load", () => {
   setupEventListeners();
@@ -25,24 +25,14 @@ function setupEventListeners() {
 
 }
 
-// addRoomToList(room);
-
-// function addRoomToList(room) {
-//   const ul = document.querySelector(".openRoomsContainer ul");
-//   console.log(ul);
-//   const li = document.createElement("li");
-//   li.innerText = room;
-//   ul.append(li);
-// }
-
-function createRoom(event, data) {
+function createRoom(event) {
   event.preventDefault();
   const [roomNameInput, passwordInput] = document.querySelectorAll(
     ".createRoomContainer input"
   );
 
   const room = roomNameInput.value;
-  let password = passwordInput.value;
+  const password = passwordInput.value;
 
   socket.emit("create room", { room, password });
 
@@ -63,9 +53,10 @@ function onJoinRoom(room) {
   const enterPasswordInput = document.querySelector(
     ".enterPasswordForm input" // hämta lösenords element
   ); // eventuellt fel element
-  let password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;  
+  const password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;
   socket.emit("join room", { room, password });
   document.querySelector(".chatContainer").classList.remove("hidden");
+  /* console.log("joinRoom", data.password) */
 }
 
 function onJoinChat(event) {
@@ -77,26 +68,6 @@ function onJoinChat(event) {
   socket.emit("join chat", { name });
   document.querySelector(".chatContainer").classList.add("hidden");
 }
-
-/*  function printLockedRooms(data) {
-const ul = document.querySelector(".lockedRoomsContainer ul");
-  ul.innerText = "";
-  data.forEach((room) => {
-    const li = document.createElement("li");
-    const button = document.createElement("button");
-    const leaveButton = document.createElement("button");
-    button.innerText = "Join";
-    button.classList.add("join_button");
-    leaveButton.innerText = "Leave chat";
-    leaveButton.classList.add("join_button");
-    button.addEventListener("click", () => onJoinRoom(room));
-    leaveButton.addEventListener("click", () => onLeaveRoom(room));
-    li.innerText = room;
-    li.append(button, leaveButton);
-    ul.append(li);
-  });
-  return;
-} */
 
 
 function printRooms(rooms) {
@@ -117,10 +88,10 @@ function printRooms(rooms) {
       leaveButton.innerText = "Leave chat";
       leaveButton.classList.add("join_button");
       button.addEventListener("click", () => onJoinRoom(room))
-      eaveButton.addEventListener("click", () => onLeaveRoom(room))
+      leaveButton.addEventListener("click", () => onLeaveRoom(room))
       li.innerText = room.name;
       li.append(button, leaveButton);
-      openUl.append(li);
+      lockedUl.append(li);
     } else {
       // create normal room
       const li = document.createElement("li");
@@ -136,61 +107,6 @@ function printRooms(rooms) {
       li.append(button, leaveButton);
       openUl.append(li);
     }
-
-   /*  console.log("hej")
-    if (!room.hasPassword) {
-      const openUl = document.querySelector(".openRoomsContainer ul");
-    openUl.innerText = "";
-    const li = document.createElement("li");
-    const button = document.createElement("button");
-    const leaveButton = document.createElement("button");
-    button.innerText = "Join";
-    button.classList.add("join_button");
-    leaveButton.innerText = "Leave chat";
-    leaveButton.classList.add("join_button");
-    button.addEventListener("click", () => onJoinRoom(room));
-    leaveButton.addEventListener("click", () => onLeaveRoom(room))
-    li.innerText = room;
-    li.append(button, leaveButton);
-    openUl.append(li);
-    } else {
-    const lockedUl = document.querySelector(".lockedRoomsContainer ul");
-    lockedUl.innerText = "";
-    const li = document.createElement("li");
-    const button = document.createElement("button");
-    const leaveButton = document.createElement("button");
-    button.innerText = "Join";
-    button.classList.add("join_button");
-    leaveButton.innerText = "Leave chat";
-    leaveButton.classList.add("join_button");
-    //button.addEventListener("click", () => onJoinRoom(room));
-    button.addEventListener("click", () => {
-      const passwordEnter = prompt("password");
-      let roomName = rooms[index].name;
-      socket.emit("check password", {
-        name: roomName,
-        password: passwordEnter
-      })
-      socket.on("correct", (data) => {
-        if (data) {
-          onJoinRoom(room);
-        } else {
-          alert("wrong")
-        }
-      })
-    })
-    leaveButton.addEventListener("click", () => onLeaveRoom(room))
-    li.innerText = room;
-    li.append(button, leaveButton);
-    lockedUl.append(li)
-    } */
-    
-   /*  if (data.password > 0) {
-      lockedUl.append(li)
-      console.log("IF-sats", data.password)
-    } else {
-      openUl.append(li);
-    } */
   });
   return;
 }
