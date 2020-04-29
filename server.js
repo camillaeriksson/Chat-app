@@ -36,7 +36,19 @@ io.on("connection", (socket) => {
         });
         io.emit("allRooms", getAllRooms());
       });
+      /* if (data.password > 0) {
+         console.log("serverPassWord", data.password)
+      } */
+      socket.on("check password", (data) => {
+        if (data.password > 0) {
+          data.room = hasPassword
+          socket.emit("correct", true);
+        } else {
+          socket.emit("correct", false);
+        }
+      })
     });
+
 
     socket.on("join room", (data) => {
       socket.leaveAll();

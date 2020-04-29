@@ -21,14 +21,14 @@ function setupEventListeners() {
   messageForm.addEventListener("submit", onSendMessage);
 
   // socket io events
-  // socket.emit("get all rooms")
-  //   socket.on("create successful");
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   socket.on("welcome message", welcomeMessage);
-  // socket.on("leave successful", hideChatUI);
-  //   socket.on("add room", printRoom);
   socket.on("allRooms", printRooms);
+  //socket.on("check password", printRooms)
+  //socket.on("create locked room", printRooms);
+  //socket.on("create open room", printRooms);
+
 }
 
 // addRoomToList(room);
@@ -41,7 +41,7 @@ function setupEventListeners() {
 //   ul.append(li);
 // }
 
-function createRoom(event) {
+function createRoom(event, data) {
   event.preventDefault();
   const [roomNameInput, passwordInput] = document.querySelectorAll(
     ".createRoomContainer input"
@@ -52,11 +52,6 @@ function createRoom(event) {
 
   socket.emit("create room", { room, password });
 
-/*   if (password.length > 0) {
-    printLockedRooms()
-  } else {
-    printRooms()
-  } */
   document.querySelector(".flexContainer h3").innerText = "";
 
   document.querySelector(".chatContainer").classList.remove("hidden");
@@ -64,7 +59,7 @@ function createRoom(event) {
   roomNameInput.value = "";
   passwordInput.value = "";
 
-  console.log(password)
+  console.log("Test", password)
 
 }
 
@@ -85,13 +80,9 @@ function onJoinChat(event) {
   document.querySelector(".chatContainer").classList.add("hidden");
 }
 
-/* function printLockedRooms(data) {
+/*  function printLockedRooms(data) {
 const ul = document.querySelector(".lockedRoomsContainer ul");
   ul.innerText = "";
-
-  function printRooms(data) {
-  const ul = document.querySelector(".openRoomsContainer ul");
-  ul.innerHTML = "";
   data.forEach((room) => {
     const li = document.createElement("li");
     const button = document.createElement("button");
@@ -107,15 +98,15 @@ const ul = document.querySelector(".lockedRoomsContainer ul");
     ul.append(li);
   });
   return;
-}
- */
+} */
 
-function printRooms(data, password) {
-  const openUl = document.querySelector(".openRoomsContainer ul");
-  openUl.innerText = "";
-  const lockedUl = document.querySelector(".lockedRoomsContainer ul");
-  lockedUl.innerText = "";
-  data.forEach((room) => {
+
+function printRooms(data) {
+  data.forEach((room, index) => {
+    console.log("hej")
+    if (!room.hasPassword) {
+      const openUl = document.querySelector(".openRoomsContainer ul");
+    openUl.innerText = "";
     const li = document.createElement("li");
     const button = document.createElement("button");
     const leaveButton = document.createElement("button");
@@ -127,13 +118,45 @@ function printRooms(data, password) {
     leaveButton.addEventListener("click", () => onLeaveRoom(room))
     li.innerText = room;
     li.append(button, leaveButton);
+    openUl.append(li);
+  } else {
+    const lockedUl = document.querySelector(".lockedRoomsContainer ul");
+    lockedUl.innerText = "";
+    const li = document.createElement("li");
+    const button = document.createElement("button");
+    const leaveButton = document.createElement("button");
+    button.innerText = "Join";
+    button.classList.add("join_button");
+    leaveButton.innerText = "Leave chat";
+    leaveButton.classList.add("join_button");
+    //button.addEventListener("click", () => onJoinRoom(room));
+    button.addEventListener("click", () => {
+      const passwordEnter = prompt("password");
+      let roomName = rooms[index].name;
+      socket.emit("check password", {
+        name: roomName,
+        password: passwordEnter
+      })
+      socket.on("correct", (data) => {
+        if (data) {
+          onJoinRoom(room);
+        } else {
+          alert("wrong")
+        }
+      })
+    })
+    leaveButton.addEventListener("click", () => onLeaveRoom(room))
+    li.innerText = room;
+    li.append(button, leaveButton);
+    lockedUl.append(li)
+  }
     
-    if (password === password) {
+   /*  if (data.password > 0) {
       lockedUl.append(li)
-      console.log(password)
+      console.log("IF-sats", data.password)
     } else {
       openUl.append(li);
-    }
+    } */
   });
   return;
 }
