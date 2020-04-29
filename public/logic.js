@@ -25,6 +25,7 @@ function setupEventListeners() {
   //   socket.on("create successful");
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
+  //   socket.on("print room", printRoomName);
   socket.on("welcome message", welcomeMessage);
   // socket.on("leave successful", hideChatUI);
   //   socket.on("add room", printRoom);
@@ -42,6 +43,7 @@ function setupEventListeners() {
 // }
 
 function createRoom(event) {
+  document.querySelector(".messageContainer ul").innerText = "";
   event.preventDefault();
   const [roomNameInput, passwordInput] = document.querySelectorAll(
     ".createRoomContainer input"
@@ -56,6 +58,12 @@ function createRoom(event) {
 
   document.querySelector(".chatContainer").classList.remove("hidden");
 
+  const roomNameContainer = document.querySelector(".roomNameContainer");
+  const roomName = document.createElement("h2");
+  roomNameContainer.innerHTML = "";
+  roomName.innerText = room;
+  roomNameContainer.append(roomName);
+
   roomNameInput.value = "";
   passwordInput.value = "";
 }
@@ -65,6 +73,12 @@ function onJoinRoom(room) {
   document.querySelector(".messageContainer ul").innerText = "";
   socket.emit("join room", { room });
   document.querySelector(".chatContainer").classList.remove("hidden");
+
+  const roomNameContainer = document.querySelector(".roomNameContainer");
+  const roomName = document.createElement("h2");
+  roomNameContainer.innerHTML = "";
+  roomName.innerText = room;
+  roomNameContainer.append(roomName);
 }
 
 function onJoinChat(event) {
@@ -125,13 +139,16 @@ function loadChatUI(name) {
 }
 
 function onMessageReceived({ name, message }) {
-  const hours = new Date().getHours();
-  const minutes = new Date().getMinutes();
+  const time = new Date().toTimeString().substr(0, 5);
+  //   const s = d.format("hh:mm tt");
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
-  li.innerText = `${hours}:${minutes} ${name}: ${message}`;
+  li.innerText = `${time} ${name}: ${message}`;
   ul.append(li);
   console.log(name, message);
+
+  const chatMessages = document.querySelector(".messageContainer");
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function welcomeMessage({ name }) {
@@ -143,3 +160,10 @@ function welcomeMessage({ name }) {
   welcomeMessageContainer.append(welcomeMessage);
   flexContainer.append(welcomeMessageContainer);
 }
+
+// function printRoomName(room) {
+//   const messageContainer = document.querySelector(".messageContainer");
+//   const roomName = document.createElement("h2");
+//   roomName.innerHTML = `${room}`;
+//   messageContainer.prepend(roomName);
+// }

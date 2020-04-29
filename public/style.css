@@ -31,11 +31,16 @@ i {
   margin-bottom: 1rem;
 }
 
+.roomNameContainer {
+  padding: 1rem;
+  background-color: rgb(204, 204, 204);
+}
+
 .welcomeMessageContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 70%;
 }
 
 form {
@@ -94,7 +99,7 @@ button {
 
 .messageContainer {
   width: 100%;
-  height: 80%;
+  height: 75%;
   overflow: auto;
 }
 
