@@ -7,9 +7,6 @@ window.addEventListener("load", () => {
 });
 
 function setupEventListeners() {
-  //   const joinForm = document.querySelector("form.joinUI");
-  //   joinForm.addEventListener("submit", onJoinRoom);
-
   const joinForm = document.querySelector("form.joinUI");
   joinForm.addEventListener("submit", onJoinChat);
 
@@ -25,9 +22,6 @@ function setupEventListeners() {
   socket.on("message", onMessageReceived);
   socket.on("welcome message", welcomeMessage);
   socket.on("allRooms", printRooms);
-  //socket.on("check password", printRooms)
-  //socket.on("create locked room", printRooms);
-  //socket.on("create open room", printRooms);
 
 }
 
@@ -66,10 +60,10 @@ function createRoom(event, data) {
 function onJoinRoom(room) {
   document.querySelector(".flexContainer h3").innerText = "";
   document.querySelector(".messageContainer ul").innerText = "";
-  const [roomNameInput, passwordInput] = document.querySelectorAll(
-    ".createRoomContainer input" // hämta lösenords element
+  const enterPasswordInput = document.querySelector(
+    ".enterPasswordForm input" // hämta lösenords element
   ); // eventuellt fel element
-  let password = !passwordInput.value.length ? null : passwordInput.value;  
+  let password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;  
   socket.emit("join room", { room, password });
   document.querySelector(".chatContainer").classList.remove("hidden");
 }
@@ -106,15 +100,44 @@ const ul = document.querySelector(".lockedRoomsContainer ul");
 
 
 function printRooms(rooms) {
-  rooms.forEach((room, index) => {
+  const openUl = document.querySelector(".openRoomsContainer ul");
+  openUl.innerText = "";
+  const lockedUl = document.querySelector(".lockedRoomsContainer ul");
+  lockedUl.innerText = "";
+  
+  rooms.forEach((room) => {
 
     if (room.hasPassword) {
       // create password room
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      const leaveButton = document.createElement("button");
+      button.innerText = "Join";
+      button.classList.add("join_button");
+      leaveButton.innerText = "Leave chat";
+      leaveButton.classList.add("join_button");
+      button.addEventListener("click", () => onJoinRoom(room))
+      eaveButton.addEventListener("click", () => onLeaveRoom(room))
+      li.innerText = room.name;
+      li.append(button, leaveButton);
+      openUl.append(li);
     } else {
       // create normal room
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      const leaveButton = document.createElement("button");
+      button.innerText = "Join";
+      button.classList.add("join_button");
+      leaveButton.innerText = "Leave chat";
+      leaveButton.classList.add("join_button");
+      button.addEventListener("click", () => onJoinRoom(room));
+      leaveButton.addEventListener("click", () => onLeaveRoom(room))
+      li.innerText = room.name;
+      li.append(button, leaveButton);
+      openUl.append(li);
     }
 
-    console.log("hej")
+   /*  console.log("hej")
     if (!room.hasPassword) {
       const openUl = document.querySelector(".openRoomsContainer ul");
     openUl.innerText = "";
@@ -130,7 +153,7 @@ function printRooms(rooms) {
     li.innerText = room;
     li.append(button, leaveButton);
     openUl.append(li);
-  } else {
+    } else {
     const lockedUl = document.querySelector(".lockedRoomsContainer ul");
     lockedUl.innerText = "";
     const li = document.createElement("li");
@@ -160,7 +183,7 @@ function printRooms(rooms) {
     li.innerText = room;
     li.append(button, leaveButton);
     lockedUl.append(li)
-  }
+    } */
     
    /*  if (data.password > 0) {
       lockedUl.append(li)

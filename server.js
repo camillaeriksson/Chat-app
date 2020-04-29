@@ -7,8 +7,8 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 const rooms = {
-  "rum 1" : { password: null},
-  "rum 2" : { password: "hje213" }
+ /*  "rum 1" : { password: null},
+  "rum 2" : { password: "hje213" } */
 }
 
 app.use(express.static("public"));
@@ -35,35 +35,20 @@ io.on("connection", (socket) => {
     socket.on("create room", (data) => {
       socket.leaveAll();
       socket.join(data.room, () => {
-        rooms[data.room] = { password: data.password}
+        rooms[data.room] = { password: data.password }
 
         io.to(data.room).emit("message", {
           name: name.name,
           message: `Has joined ${data.room}`,
         });
         io.emit("allRooms", getAllRooms());
-      });
-      /* if (data.password > 0) {
-         console.log("serverPassWord", data.password)
-      } */
-      socket.on("check password", (data) => {
-        if (data.password > 0) {
-          data.room = hasPassword
-          socket.emit("correct", true);
-        } else {
-          socket.emit("correct", false);
-        }
-      })
+      });  
+      return;
     });
 
 
     socket.on("join room", (data) => {
       socket.leaveAll();
-
-      // Make sure to leave all previous rooms
-      // for (const room of Object.keys(socket.rooms)) {
-      //   /* socket.leave(room); */
-      // }
       if (data.password !== rooms[data.room].password) {
         // emit fel lösenord
         return;
@@ -118,7 +103,7 @@ function getAllRooms() {
       }
     }
   }
-  console.log(availableRooms);
+  console.log("availableRooms", availableRooms);
   return availableRooms;
 }
 
