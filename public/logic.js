@@ -1,6 +1,6 @@
 const socket = io();
-const name = ""
-const room = ""
+const name = "";
+const room = "";
 
 window.addEventListener("load", () => {
   setupEventListeners();
@@ -52,11 +52,16 @@ function createRoom(event) {
 
   socket.emit("create room", { room, password });
 
+  document.querySelector(".flexContainer h3").innerText = "";
+
+  document.querySelector(".chatContainer").classList.remove("hidden");
+
   roomNameInput.value = "";
   passwordInput.value = "";
 }
 
 function onJoinRoom(room) {
+  document.querySelector(".flexContainer h3").innerText = "";
   document.querySelector(".messageContainer ul").innerText = "";
   socket.emit("join room", { room });
   document.querySelector(".chatContainer").classList.remove("hidden");
@@ -111,7 +116,10 @@ function onSendMessage(event) {
   input.value = "";
 }
 
-function loadChatUI(data) {
+function loadChatUI(name) {
+  const nameContainer = document.createElement("h1");
+  nameContainer.innerText = `${name}`;
+  document.querySelector(".roomListContainer").prepend(nameContainer);
   document.querySelector(".joinUI").classList.add("hidden");
   document.querySelector(".flexContainer").classList.remove("hidden");
 }
@@ -127,8 +135,8 @@ function onMessageReceived({ name, message }) {
 }
 
 function welcomeMessage({ name }) {
-  const ul = document.querySelector(".messageContainer ul");
-  const li = document.createElement("li");
-  li.innerText = `Welcome to the chat, ${name}!`;
-  ul.append(li);
+  const chatContainer = document.querySelector(".flexContainer");
+  const welcomeMessage = document.createElement("h3");
+  welcomeMessage.innerText = `Welcome to the chat, ${name}!`;
+  chatContainer.append(welcomeMessage);
 }

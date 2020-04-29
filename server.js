@@ -13,12 +13,6 @@ io.on("connection", (socket) => {
 
   io.to(socket.id).emit("allRooms", getAllRooms());
 
-  socket.on("create room", (data) => {
-    socket.join(data.room, () => {
-      io.emit("allRooms", getAllRooms());
-    });
-  });
-
   socket.on("leave room", (room) => {
     socket.leaveAll(room, () => {
       socket.to(room).emit("user left", socket.id);
@@ -28,13 +22,24 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join chat", (name) => {
-    io.to(socket.id).emit("join successful", "success");
+    io.to(socket.id).emit("join successful", name.name);
     io.to(socket.id).emit("welcome message", {
       name: name.name,
     });
 
+    socket.on("create room", (data) => {
+      socket.leaveAll();
+      socket.join(data.room, () => {
+        io.to(data.room).emit("message", {
+          name: name.name,
+          message: `Has joined ${data.room}`,
+        });
+        io.emit("allRooms", getAllRooms());
+      });
+    });
+
     socket.on("join room", (data) => {
-      socket.leaveAll()
+      socket.leaveAll();
 
       // Make sure to leave all previous rooms
       // for (const room of Object.keys(socket.rooms)) {
@@ -44,21 +49,21 @@ io.on("connection", (socket) => {
       socket.join(data.room, () => {
         // Respond to client that joined successfully
         io.emit("allRooms", getAllRooms());
-        console.log("TEST", socket.rooms)
+        console.log("TEST", socket.rooms);
 
         // Bradcast message to all clients in the room
         io.to(data.room).emit("message", {
           name: name.name,
-          message: `Has joined the room`,
+          message: `Has joined ${data.room}`,
         });
       });
     });
-    
-    socket.on('message', (message) => {
+
+    socket.on("message", (message) => {
       console.log("message", message);
       // Bradcast message to all clients in the rooms
-      console.log(socket.rooms)
-      const room = Object.keys(socket.rooms)[0]
+      console.log(socket.rooms);
+      const room = Object.keys(socket.rooms)[0];
 
       if (message) {
         io.to(room).emit("message", { name: name.name, message });
