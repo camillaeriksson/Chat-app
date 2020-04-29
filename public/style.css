@@ -140,6 +140,7 @@ button {
 
 li {
   list-style-type: none;
+  line-height: 1.2rem;
 }
 #messages {
   margin: 0;

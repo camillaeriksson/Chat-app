@@ -143,7 +143,7 @@ function onMessageReceived({ name, message }) {
   //   const s = d.format("hh:mm tt");
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
-  li.innerText = `${time} ${name}: ${message}`;
+  li.innerText = `${time} ${name}\n ${message}`;
   ul.append(li);
   console.log(name, message);
 

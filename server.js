@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
       socket.join(data.room, () => {
         io.to(data.room).emit("message", {
           name: name.name,
-          message: `Has joined ${data.room}`,
+          message: `has joined ${data.room}`,
         });
         io.emit("allRooms", getAllRooms());
       });
