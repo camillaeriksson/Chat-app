@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("create room", (data) => {
+      //   io.to(socket.id).emit("print room", data.room);
       socket.leaveAll();
       socket.join(data.room, () => {
         rooms[data.room] = { password: data.password }
