@@ -24,8 +24,11 @@ io.on("connection", (socket) => {
     });
     // koll om det finns nån kvar i rummet
     // io.sockets.adapter.rooms
-    var roomsAdapter = io.socket.adapter.rooms
-    console.log("adapter.rooms", roomsAdapter)
+    var rooms1 = io.sockets.adapter.rooms
+    if (rooms1) {
+        console.log("Ta bort rum från arrayen");
+    }
+    console.log("rooms1", rooms1);
     io.emit("allRooms", getAllRooms());
   });
 
@@ -121,8 +124,8 @@ function getAllRooms() {
 
 // function getAllRooms() {
 //   var availableRooms = [];
-//   var rooms = io.sockets.adapter.rooms;
-//   console.log("rooms", rooms);
+//  var rooms1 = io.sockets.adapter.rooms;
+// console.log("rooms1", rooms1);
 //   if (rooms) {
 //     const socketIds = Object.keys(io.sockets.sockets)
 
