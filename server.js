@@ -91,10 +91,10 @@ io.on("connection", (socket) => {
 
 function getAllRooms() {
   var availableRooms = [];
-  var roomNames = io.sockets.adapter.rooms;
+  //var roomNames = io.sockets.adapter.rooms;
   console.log("rooms", rooms);
   if (rooms) {
-    for (var room in roomNames) {
+    for (var room in rooms) {
       if (room.length !== 20) {
         const formattedRoom = {
           name: room,

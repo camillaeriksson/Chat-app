@@ -56,6 +56,7 @@ function createRoom(event) {
 }
 
 function onJoinRoom(room) {
+  console.log(room)
   document.querySelector(".welcomeMessageContainer").classList.add("hidden");
   document.querySelector(".messageContainer ul").innerText = "";
   const enterPasswordInput = document.querySelector(
@@ -64,7 +65,7 @@ function onJoinRoom(room) {
   const password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;
   socket.emit("join room", { room, password });
   document.querySelector(".chatContainer").classList.remove("hidden");
-  /* console.log("joinRoom", data.password) */
+ /*  console.log("joinRoom", data.password) */
 }
 
 function onJoinChat(event) {
@@ -78,13 +79,14 @@ function onJoinChat(event) {
 }
 
 
-function printRooms(roomNames) {
+function printRooms(rooms) {
   const openUl = document.querySelector(".openRoomsContainer ul");
   openUl.innerText = "";
   const lockedUl = document.querySelector(".lockedRoomsContainer ul");
   lockedUl.innerText = "";
   
-  roomNames.forEach((room) => {
+  rooms.forEach((room) => {
+    console.log(rooms)
 
     if (room.hasPassword) {
       // create password room
