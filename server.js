@@ -24,6 +24,8 @@ io.on("connection", (socket) => {
     });
     // koll om det finns nån kvar i rummet
     // io.sockets.adapter.rooms
+    var roomsAdapter = io.socket.adapter.rooms
+    console.log("adapter.rooms", roomsAdapter)
     io.emit("allRooms", getAllRooms());
   });
 
