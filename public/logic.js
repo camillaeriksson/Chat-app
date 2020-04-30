@@ -70,13 +70,13 @@ function onJoinChat(event) {
 }
 
 
-function printRooms(rooms) {
+function printRooms(roomNames) {
   const openUl = document.querySelector(".openRoomsContainer ul");
   openUl.innerText = "";
   const lockedUl = document.querySelector(".lockedRoomsContainer ul");
   lockedUl.innerText = "";
   
-  rooms.forEach((room) => {
+  roomNames.forEach((room) => {
 
     if (room.hasPassword) {
       // create password room
