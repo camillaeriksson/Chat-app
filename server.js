@@ -18,12 +18,30 @@ io.on("connection", (socket) => {
 
   // When client clicks leave button
   socket.on("leave room", (room) => {
+    // koll om det finns nån kvar i rummet
+    // io.sockets.adapter.rooms
+    //console.log("Room: ", room)
+    // var rooms1 = io.sockets.adapter.rooms
+    console.log("Lååångt", io.sockets.adapter.rooms[room.room.name]);
+    console.log("Roooom name", room.room.name);
+
+    let roomIndex = rooms.findIndex((roomToFind) => {
+      return room.room.name == roomToFind.name;
+    });
+
+    if (io.sockets.adapter.rooms[room.room.name].length === 1) {
+      rooms.splice(roomIndex, 1);
+      //console.log("Ta bort rum från arrayen");
+    }
+    
+    console.log("uppdate", rooms);
+    // console.log("rooms1", io.sockets.adapter.rooms[room.room.name].length);
+
+    io.emit("allRooms", getAllRooms());
     socket.leaveAll(room, () => {
       socket.to(room).emit("user left", socket.id);
     });
-    // koll om det finns nån kvar i rummet
-    // io.sockets.adapter.rooms
-    io.emit("allRooms", getAllRooms());
+    console.log(getAllRooms())
   });
 
   // When client joins chat
