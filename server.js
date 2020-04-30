@@ -7,16 +7,16 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 const rooms = [];
-/*  "rum 1" : { password: null},
-  "rum 2" : { password: "hje213" } */
 
 app.use(express.static("public"));
 
+// When client connects
 io.on("connection", (socket) => {
   console.log("Client connected: ", socket.id);
 
   io.to(socket.id).emit("allRooms", getAllRooms());
 
+  // When client clicks leave button
   socket.on("leave room", (room) => {
     // koll om det finns nån kvar i rummet
     // io.sockets.adapter.rooms
@@ -40,54 +40,62 @@ io.on("connection", (socket) => {
     io.emit("allRooms", getAllRooms());
     socket.leaveAll(room, () => {
       socket.to(room).emit("user left", socket.id);
-      // socket.to(socket.id).emit("leave successful", "success");
     });
     console.log(getAllRooms())
   });
 
+  // When client joins chat
   socket.on("join chat", (name) => {
+    // Respond to client that joined successfully
     io.to(socket.id).emit("join successful", name.name);
+
+    // Print welcome message to client
     io.to(socket.id).emit("welcome message", {
       name: name.name,
     });
+
     io.emit("allRooms", getAllRooms());
 
+    // When client creates a room
     socket.on("create room", (data) => {
-      //   io.to(socket.id).emit("print room", data.room);
+      // Leave all other rooms
       socket.leaveAll();
+
+      // Join new created room
       socket.join(data.room, () => {
-        //console.log("socket: ", socket.rooms)
+        // Add the new created room to array
         rooms.push({ name: data.room, password: data.password });
 
+        // Print to room that user has joined
         io.to(data.room).emit("message", {
           name: name.name,
           message: `has joined ${data.room}`,
         });
+
         io.emit("allRooms", getAllRooms());
       });
       return;
     });
 
+    // When client clicks join button
     socket.on("join room", (data) => {
       socket.leaveAll();
+
+      // Find room index in array
       let roomIndex = rooms.findIndex((room) => {
         return room.name == data.room.name;
       });
-      console.log(data.room.password, rooms[roomIndex].password);
 
+      // If password is wrong
       if (data.password !== rooms[roomIndex].password) {
-        // emit fel lösenord
-        // console.log("lösenord");
-        return;
-        // socket.emit("leave room", data.room.name);
+        socket.emit("leave room", data.room.name);
       }
 
+      // Join room
       socket.join(data.room.name, () => {
-        // Respond to client that joined successfully
         io.emit("allRooms", getAllRooms());
-        console.log("TEST", socket.rooms);
 
-        // Bradcast message to all clients in the room
+        // Print to room that user has joined
         io.to(data.room.name).emit("message", {
           name: name.name,
           message: `has joined ${data.room.name}`,
@@ -95,10 +103,8 @@ io.on("connection", (socket) => {
       });
     });
 
+    // Print message to all clients in the rooms
     socket.on("message", (message) => {
-      console.log("message", message);
-      // Bradcast message to all clients in the rooms
-      console.log(socket.rooms);
       const room = Object.keys(socket.rooms)[0];
 
       if (message) {
@@ -112,45 +118,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// ["rum 1", "rum 2", ...]
-
-// [{ name: "rum 1", hasPassword: false }, { name: "rum 2", hasPassword: true }]
-
+// Get all the rooms in the array
 function getAllRooms() {
-  // var availableRooms = [];
-  // //var roomNames = io.sockets.adapter.rooms;
-  // console.log("rooms", rooms);
-  // if (rooms) {
-  //   for (var room in rooms) {
-  //     if (room.length !== 20) {
-  //       const formattedRoom = {
-  //         name: room,
-  //         hasPassword: rooms[room].password ? true : false
-  //       }
-  //       availableRooms.push(formattedRoom);
-  //     }
-  //   }
-  // }
-  // console.log("availableRooms", availableRooms);
-  // return availableRooms;
   return rooms;
 }
-
-// function getAllRooms() {
-//   var availableRooms = [];
-//  var rooms1 = io.sockets.adapter.rooms;
-// console.log("rooms1", rooms1);
-//   if (rooms) {
-//     const socketIds = Object.keys(io.sockets.sockets)
-
-//     for (var roomId in rooms) {
-//       if (socketIds.find((socketId) => socketId !== roomId)) {
-//         availableRooms.push(roomId);
-//       }
-//     }
-//   }
-//   console.log(availableRooms);
-//   return availableRooms;
-// }
 
 server.listen(3000, () => console.log("listening at 3000"));
