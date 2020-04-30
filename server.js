@@ -58,8 +58,9 @@ io.on("connection", (socket) => {
 
       if (data.password !== rooms[roomIndex].password) {
         // emit fel lösenord
-        console.log("lösenord");
-        return;
+        // console.log("lösenord");
+        // return;
+        socket.emit("leave room", data.room.name);
       }
 
       socket.join(data.room.name, () => {

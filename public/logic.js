@@ -23,6 +23,7 @@ function setupEventListeners() {
   //   socket.on("print room", printRoomName);
   socket.on("welcome message", welcomeMessage);
   socket.on("allRooms", printRooms);
+  socket.on("leave room", onLeaveRoom);
 }
 
 function createRoom(event) {
