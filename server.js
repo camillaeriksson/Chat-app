@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
 
         io.to(data.room).emit("message", {
           name: name.name,
-          message: `Has joined ${data.room}`,
+          message: `has joined ${data.room}`,
         });
         io.emit("allRooms", getAllRooms());
       });  
@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
         // Bradcast message to all clients in the room
         io.to(data.room).emit("message", {
           name: name.name,
-          message: `Has joined ${data.room}`,
+          message: `has joined ${data.room}`,
         });
       });
     });
