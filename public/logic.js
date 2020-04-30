@@ -59,10 +59,14 @@ function onJoinRoom(room) {
   console.log(room)
   document.querySelector(".welcomeMessageContainer").classList.add("hidden");
   document.querySelector(".messageContainer ul").innerText = "";
-  const enterPasswordInput = document.querySelector(
-    ".enterPasswordForm input" // hämta lösenords element
-  ); // eventuellt fel element
-  const password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;
+  // const enterPasswordInput = document.querySelector(
+    // ".enterPasswordForm input" // hämta lösenords element
+   // eventuellt fel element
+  // const password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;
+  let password = "" 
+  if (room.password.length) {
+    password = prompt("Ange lösenord")
+  }
   socket.emit("join room", { room, password });
   document.querySelector(".chatContainer").classList.remove("hidden");
  /*  console.log("joinRoom", data.password) */
@@ -76,6 +80,7 @@ function onJoinChat(event) {
 
   socket.emit("join chat", { name });
   document.querySelector(".chatContainer").classList.add("hidden");
+  
 }
 
 
@@ -88,7 +93,7 @@ function printRooms(rooms) {
   rooms.forEach((room) => {
     console.log(rooms)
 
-    if (room.hasPassword) {
+    if (room.password) {
       // create password room
       const li = document.createElement("li");
       const button = document.createElement("button");
