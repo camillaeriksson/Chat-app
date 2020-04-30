@@ -1,15 +1,12 @@
 const socket = io();
-const name = "";
-const room = "";
+/* const name = "";
+const room = ""; */
 
 window.addEventListener("load", () => {
   setupEventListeners();
 });
 
 function setupEventListeners() {
-  //   const joinForm = document.querySelector("form.joinUI");
-  //   joinForm.addEventListener("submit", onJoinRoom);
-
   const joinForm = document.querySelector("form.joinUI");
   joinForm.addEventListener("submit", onJoinChat);
 
@@ -21,26 +18,13 @@ function setupEventListeners() {
   messageForm.addEventListener("submit", onSendMessage);
 
   // socket io events
-  // socket.emit("get all rooms")
-  //   socket.on("create successful");
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
   //   socket.on("print room", printRoomName);
   socket.on("welcome message", welcomeMessage);
-  // socket.on("leave successful", hideChatUI);
-  //   socket.on("add room", printRoom);
   socket.on("allRooms", printRooms);
+
 }
-
-// addRoomToList(room);
-
-// function addRoomToList(room) {
-//   const ul = document.querySelector(".openRoomsContainer ul");
-//   console.log(ul);
-//   const li = document.createElement("li");
-//   li.innerText = room;
-//   ul.append(li);
-// }
 
 function createRoom(event) {
   document.querySelector(".messageContainer ul").innerText = "";
@@ -66,19 +50,26 @@ function createRoom(event) {
 
   roomNameInput.value = "";
   passwordInput.value = "";
+
+  console.log("Test", password)
+
 }
 
 function onJoinRoom(room) {
+  console.log(room)
   document.querySelector(".welcomeMessageContainer").classList.add("hidden");
   document.querySelector(".messageContainer ul").innerText = "";
-  socket.emit("join room", { room });
+  // const enterPasswordInput = document.querySelector(
+    // ".enterPasswordForm input" // hämta lösenords element
+   // eventuellt fel element
+  // const password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;
+  let password = "" 
+  if (room.password.length) {
+    password = prompt("Ange lösenord")
+  }
+  socket.emit("join room", { room, password });
   document.querySelector(".chatContainer").classList.remove("hidden");
-
-  const roomNameContainer = document.querySelector(".roomNameContainer");
-  const roomName = document.createElement("h2");
-  roomNameContainer.innerHTML = "";
-  roomName.innerText = room;
-  roomNameContainer.append(roomName);
+ /*  console.log("joinRoom", data.password) */
 }
 
 function onJoinChat(event) {
@@ -89,24 +80,48 @@ function onJoinChat(event) {
 
   socket.emit("join chat", { name });
   document.querySelector(".chatContainer").classList.add("hidden");
+  
 }
 
-function printRooms(data) {
-  const ul = document.querySelector(".openRoomsContainer ul");
-  ul.innerHTML = "";
-  data.forEach((room) => {
-    const li = document.createElement("li");
-    const button = document.createElement("button");
-    const leaveButton = document.createElement("button");
-    button.innerText = "Join";
-    button.classList.add("join_button");
-    leaveButton.innerText = "Leave";
-    leaveButton.classList.add("join_button");
-    button.addEventListener("click", () => onJoinRoom(room));
-    leaveButton.addEventListener("click", () => onLeaveRoom(room));
-    li.innerText = room;
-    li.append(button, leaveButton);
-    ul.append(li);
+
+function printRooms(rooms) {
+  const openUl = document.querySelector(".openRoomsContainer ul");
+  openUl.innerText = "";
+  const lockedUl = document.querySelector(".lockedRoomsContainer ul");
+  lockedUl.innerText = "";
+  
+  rooms.forEach((room) => {
+    console.log(rooms)
+
+    if (room.password) {
+      // create password room
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      const leaveButton = document.createElement("button");
+      button.innerText = "Join";
+      button.classList.add("join_button");
+      leaveButton.innerText = "Leave chat";
+      leaveButton.classList.add("join_button");
+      button.addEventListener("click", () => onJoinRoom(room))
+      leaveButton.addEventListener("click", () => onLeaveRoom(room))
+      li.innerText = room.name;
+      li.append(button, leaveButton);
+      lockedUl.append(li);
+    } else {
+      // create normal room
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      const leaveButton = document.createElement("button");
+      button.innerText = "Join";
+      button.classList.add("join_button");
+      leaveButton.innerText = "Leave chat";
+      leaveButton.classList.add("join_button");
+      button.addEventListener("click", () => onJoinRoom(room));
+      leaveButton.addEventListener("click", () => onLeaveRoom(room))
+      li.innerText = room.name;
+      li.append(button, leaveButton);
+      openUl.append(li);
+    }
   });
   return;
 }
