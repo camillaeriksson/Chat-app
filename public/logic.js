@@ -1,6 +1,4 @@
 const socket = io();
-/* const name = "";
-const room = ""; */
 
 window.addEventListener("load", () => {
   setupEventListeners();
@@ -20,7 +18,6 @@ function setupEventListeners() {
   // socket io events
   socket.on("join successful", loadChatUI);
   socket.on("message", onMessageReceived);
-  //   socket.on("print room", printRoomName);
   socket.on("welcome message", welcomeMessage);
   socket.on("allRooms", printRooms);
   socket.on("leave room", onLeaveRoom);
@@ -50,16 +47,10 @@ function createRoom(event) {
 
   roomNameInput.value = "";
   passwordInput.value = "";
-
-  console.log("Test", password);
 }
 
 function onJoinRoom(room) {
   document.querySelector(".messageContainer ul").innerText = "";
-  // const enterPasswordInput = document.querySelector(
-  // ".enterPasswordForm input" // hämta lösenords element
-  // eventuellt fel element
-  // const password = !enterPasswordInput.value.length ? null : enterPasswordInput.value;
   let password = "";
   if (room.password.length) {
     password = prompt("Ange lösenord");
@@ -93,8 +84,6 @@ function printRooms(rooms) {
   lockedUl.innerText = "";
 
   rooms.forEach((room) => {
-    console.log(rooms);
-
     if (room.password) {
       // create password room
       const li = document.createElement("li");
@@ -130,15 +119,9 @@ function printRooms(rooms) {
 
 function onLeaveRoom(room) {
   socket.emit("leave room", { room });
-  console.log("has left room", room);
   document.querySelector(".messageContainer ul").innerText = "";
   document.querySelector(".chatContainer").classList.add("hidden");
 }
-
-/* function hideChatUI() {
-  console.log("hideChatUI")
-  document.querySelector(".messageContainer ul").empty()
-} */
 
 function onSendMessage(event) {
   event.preventDefault();
@@ -157,12 +140,10 @@ function loadChatUI(name) {
 
 function onMessageReceived({ name, message }) {
   const time = new Date().toTimeString().substr(0, 5);
-  //   const s = d.format("hh:mm tt");
   const ul = document.querySelector(".messageContainer ul");
   const li = document.createElement("li");
   li.innerText = `${time} ${name}\n ${message}`;
   ul.append(li);
-  console.log(name, message);
 
   const chatMessages = document.querySelector(".messageContainer");
   chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -177,10 +158,3 @@ function welcomeMessage({ name }) {
   welcomeMessageContainer.append(welcomeMessage);
   flexContainer.append(welcomeMessageContainer);
 }
-
-// function printRoomName(room) {
-//   const messageContainer = document.querySelector(".messageContainer");
-//   const roomName = document.createElement("h2");
-//   roomName.innerHTML = `${room}`;
-//   messageContainer.prepend(roomName);
-// }

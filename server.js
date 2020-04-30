@@ -18,18 +18,31 @@ io.on("connection", (socket) => {
   io.to(socket.id).emit("allRooms", getAllRooms());
 
   socket.on("leave room", (room) => {
+    // koll om det finns nån kvar i rummet
+    // io.sockets.adapter.rooms
+    //console.log("Room: ", room)
+    // var rooms1 = io.sockets.adapter.rooms
+    console.log("Lååångt", io.sockets.adapter.rooms[room.room.name]);
+    console.log("Roooom name", room.room.name);
+
+    let roomIndex = rooms.findIndex((roomToFind) => {
+      return room.room.name == roomToFind.name;
+    });
+
+    if (io.sockets.adapter.rooms[room.room.name].length === 1) {
+      rooms.splice(roomIndex, 1);
+      //console.log("Ta bort rum från arrayen");
+    }
+    
+    console.log("uppdate", rooms);
+    // console.log("rooms1", io.sockets.adapter.rooms[room.room.name].length);
+
+    io.emit("allRooms", getAllRooms());
     socket.leaveAll(room, () => {
       socket.to(room).emit("user left", socket.id);
       // socket.to(socket.id).emit("leave successful", "success");
     });
-    // koll om det finns nån kvar i rummet
-    // io.sockets.adapter.rooms
-    var rooms1 = io.sockets.adapter.rooms
-    if (rooms1) {
-        console.log("Ta bort rum från arrayen");
-    }
-    console.log("rooms1", rooms1);
-    io.emit("allRooms", getAllRooms());
+    console.log(getAllRooms())
   });
 
   socket.on("join chat", (name) => {
@@ -43,6 +56,7 @@ io.on("connection", (socket) => {
       //   io.to(socket.id).emit("print room", data.room);
       socket.leaveAll();
       socket.join(data.room, () => {
+        //console.log("socket: ", socket.rooms)
         rooms.push({ name: data.room, password: data.password });
 
         io.to(data.room).emit("message", {
@@ -64,8 +78,8 @@ io.on("connection", (socket) => {
       if (data.password !== rooms[roomIndex].password) {
         // emit fel lösenord
         // console.log("lösenord");
-        // return;
-        socket.emit("leave room", data.room.name);
+        return;
+        // socket.emit("leave room", data.room.name);
       }
 
       socket.join(data.room.name, () => {
