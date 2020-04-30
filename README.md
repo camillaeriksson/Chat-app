@@ -13,13 +13,9 @@ npm init
 
 npm i
 
-npm i express
-
-npm i socket.io
-
 ### To run the server run following command:
 
-node yourFileName.js
+node server.js
 
 
 ## GitHub
