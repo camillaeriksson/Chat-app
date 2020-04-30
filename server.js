@@ -6,8 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const rooms = []
- /*  "rum 1" : { password: null},
+const rooms = [];
+/*  "rum 1" : { password: null},
   "rum 2" : { password: "hje213" } */
 
 app.use(express.static("public"));
@@ -40,32 +40,29 @@ io.on("connection", (socket) => {
       //   io.to(socket.id).emit("print room", data.room);
       socket.leaveAll();
       socket.join(data.room, () => {
-
-        rooms.push({ name: data.room, password: data.password })
+        rooms.push({ name: data.room, password: data.password });
 
         io.to(data.room).emit("message", {
           name: name.name,
           message: `has joined ${data.room}`,
         });
         io.emit("allRooms", getAllRooms());
-      });  
+      });
       return;
     });
 
-
     socket.on("join room", (data) => {
-      console.log("DAAAATA", data.room)
-      console.log("ROOOOOMS", rooms)
       socket.leaveAll();
-      let roomIndex = rooms.findIndex( (room) => {
-        return room.name == data.room.name
-      })
-      console.log(data.room.password, rooms[roomIndex].password)
-  
+      let roomIndex = rooms.findIndex((room) => {
+        return room.name == data.room.name;
+      });
+      console.log(data.room.password, rooms[roomIndex].password);
+
       if (data.password !== rooms[roomIndex].password) {
         // emit fel lösenord
-        console.log("lösenord")
-        return;
+        // console.log("lösenord");
+        // return;
+        socket.emit("leave room", data.room.name);
       }
 
       socket.join(data.room.name, () => {
