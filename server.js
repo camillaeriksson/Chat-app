@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
 
       // If password is wrong
       if (data.password !== rooms[roomIndex].password) {
-        socket.emit("leave room", data.room.name);
+        return;
       }
 
       // Join room
