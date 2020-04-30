@@ -13,7 +13,7 @@ npm init
 
 npm i
 
-### To run the server run following command:
+### To run the server use following command:
 
 node server.js
 
